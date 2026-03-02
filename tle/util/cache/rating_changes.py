@@ -44,6 +44,7 @@ class RatingChangesCache:
         changes = await self._fetch([contest])
         await self.cache_master.conn.clear_rating_changes(contest_id=contest_id)
         await self._save_changes(changes)
+        await self._refresh_handle_cache()
         return len(changes)
 
     async def fetch_all_contests(self) -> int:
@@ -72,6 +73,7 @@ class RatingChangesCache:
             contests_chunk = await self._fetch(list(contests_chunk))
             await self._save_changes(contests_chunk)
             total_changes += len(contests_chunk)
+        await self._refresh_handle_cache()
         return total_changes
 
     async def is_newly_finished_without_rating_changes(
@@ -135,6 +137,7 @@ class RatingChangesCache:
             cf_common.event_sys.dispatch(
                 events.RatingChangesUpdate, contest=contest, rating_changes=changes
             )
+        await self._refresh_handle_cache()
 
     async def _fetch(
         self, contests: list[cf.Contest]
@@ -166,7 +169,6 @@ class RatingChangesCache:
             return
         rc = await self.cache_master.conn.save_rating_changes(flattened)
         self.logger.info(f'Saved {rc} changes to database.')
-        await self._refresh_handle_cache()
 
     async def _refresh_handle_cache(self) -> None:
         self.handle_rating_cache = (

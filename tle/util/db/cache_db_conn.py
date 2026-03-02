@@ -75,6 +75,10 @@ class CacheDbConn:
         await self.conn.execute("""
             CREATE INDEX IF NOT EXISTS ix_rating_change_handle ON rating_change (handle)
         """)
+        await self.conn.execute("""
+            CREATE INDEX IF NOT EXISTS ix_rating_change_handle_time_rating
+            ON rating_change (handle, rating_update_time, new_rating)
+        """)
 
         # Table for problems fetched from contest.standings endpoint for every
         # contest. This is separate from table problem as it contains the same
@@ -230,15 +234,13 @@ class CacheDbConn:
     async def get_latest_rating_by_handle(self) -> dict[str, int]:
         """Return {handle: latest_new_rating} without loading the full table."""
         query = """
-            SELECT handle, new_rating
+            SELECT handle, new_rating, MAX(rating_update_time)
             FROM rating_change
-            ORDER BY rating_update_time
+            GROUP BY handle
         """
         cursor = await self.conn.execute(query)
-        result: dict[str, int] = {}
-        async for handle, new_rating in cursor:
-            result[handle] = new_rating
-        return result
+        rows = await cursor.fetchall()
+        return {handle: new_rating for handle, new_rating, _ in rows}
 
     async def get_rating_changes_for_contest(
         self, contest_id: int

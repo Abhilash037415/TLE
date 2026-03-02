@@ -247,6 +247,7 @@ class TestRatingChangesCache:
         contest = _make_contest(id=1)
         change = _make_rating_change(contestId=1, handle='dave', new=1900)
         await cache_system.rating_changes_cache._save_changes([(contest, [change])])
+        await cache_system.rating_changes_cache._refresh_handle_cache()
         assert cache_system.rating_changes_cache.get_current_rating('dave') == 1900
 
 
