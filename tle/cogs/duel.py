@@ -556,7 +556,7 @@ class Dueling(commands.Cog):
                 )
 
         elif challenger_time:
-            embed = self._complete_duel(
+            embed = await self._complete_duel(
                 duelid,
                 ctx.guild.id,
                 Winner.CHALLENGER,
@@ -571,7 +571,7 @@ class Dueling(commands.Cog):
                 embed=embed,
             )
         elif challengee_time:
-            embed = self._complete_duel(
+            embed = await self._complete_duel(
                 duelid,
                 ctx.guild.id,
                 Winner.CHALLENGEE,
