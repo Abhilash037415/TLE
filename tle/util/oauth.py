@@ -105,7 +105,7 @@ def decode_id_token(
     client_secret: str,
     client_id: str,
 ) -> dict[str, Any]:
-    return jwt.decode(  # type: ignore[no-any-return]
+    return jwt.decode(
         id_token,
         client_secret,
         algorithms=['HS256'],

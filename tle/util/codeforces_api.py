@@ -193,9 +193,9 @@ class Problem(NamedTuple):
 
     contestId: int | None
     problemsetName: str | None
-    index: str  # type: ignore[assignment]
+    index: str
     name: str
-    type: str  # type: ignore[assignment]
+    type: str
     points: float | None
     rating: int | None
     tags: list[str]
@@ -252,7 +252,7 @@ class ProblemStatistics(NamedTuple):
     """Codeforces problem statistics."""
 
     contestId: int | None
-    index: str  # type: ignore[assignment]
+    index: str
     solvedCount: int
 
 

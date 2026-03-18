@@ -337,7 +337,7 @@ class Codeforces(commands.Cog):
 
     @commands.hybrid_command(brief='Print user gitgud history')
     async def gitlog(
-        self, ctx: commands.Context, member: discord.Member = None
+        self, ctx: commands.Context, member: discord.Member | None = None
     ) -> None:
         """Displays the list of gitgud problems issued to the specified member,
         excluding those noguded by admins. If the challenge was completed, time
@@ -362,6 +362,7 @@ class Codeforces(commands.Cog):
             embed = discord_common.cf_color_embed(description=log_str)
             return message, embed
 
+        assert isinstance(ctx.author, discord.Member)
         member = member or ctx.author
         data = await self.bot.user_db.gitlog(member.id)
         if not data:

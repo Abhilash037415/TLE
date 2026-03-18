@@ -81,7 +81,7 @@ def send_error_if(*error_cls: type[Exception]) -> Callable[..., Any]:
         async def wrapper(cog: Any, ctx: commands.Context, error: Exception) -> None:
             if isinstance(error, error_cls):
                 await ctx.send(embed=embed_alert(error))
-                error.handled = True  # type: ignore[attr-defined]
+                error.handled = True
             else:
                 await func(cog, ctx, error)
 

@@ -631,8 +631,9 @@ class Dueling(commands.Cog):
 
     @duel.command(brief='Show duelist profile')
     async def profile(
-        self, ctx: commands.Context, member: discord.Member = None
+        self, ctx: commands.Context, member: discord.Member | None = None
     ) -> None:
+        assert isinstance(ctx.author, discord.Member)
         member = member or ctx.author
         if not await self.bot.user_db.is_duelist(member.id):
             raise DuelCogError(f'{member.mention} is not a registered duelist.')
@@ -738,12 +739,13 @@ class Dueling(commands.Cog):
     async def vshistory(
         self,
         ctx: commands.Context,
-        member1: discord.Member = None,
-        member2: discord.Member = None,
+        member1: discord.Member | None = None,
+        member2: discord.Member | None = None,
     ) -> None:
         if not member1:
             raise DuelCogError('You need to specify one or two discord members.')
 
+        assert isinstance(ctx.author, discord.Member)
         member2 = member2 or ctx.author
         data = await self.bot.user_db.get_pair_duels(member1.id, member2.id)
         wins, losses, draws = 0, 0, 0
@@ -771,8 +773,9 @@ class Dueling(commands.Cog):
 
     @duel.command(brief='Print user dueling history')
     async def history(
-        self, ctx: commands.Context, member: discord.Member = None
+        self, ctx: commands.Context, member: discord.Member | None = None
     ) -> None:
+        assert isinstance(ctx.author, discord.Member)
         member = member or ctx.author
         data = await self.bot.user_db.get_duels(member.id)
         message = discord.utils.escape_mentions(
@@ -803,7 +806,7 @@ class Dueling(commands.Cog):
 
     @duel.command(brief='Print list of ongoing duels')
     async def ongoing(
-        self, ctx: commands.Context, member: discord.Member = None
+        self, ctx: commands.Context, member: discord.Member | None = None
     ) -> None:
         async def make_line(entry: Any) -> str:
             start_time, name, challenger, challengee = entry
@@ -827,6 +830,7 @@ class Dueling(commands.Cog):
             embed = discord_common.cf_color_embed(description=log_str)
             return message, embed
 
+        assert isinstance(ctx.author, discord.Member)
         member = member or ctx.author
         data = await self.bot.user_db.get_ongoing_duels()
         if not data:
@@ -939,6 +943,7 @@ class Dueling(commands.Cog):
     @duel.command(brief='Plot rating', usage='[duelist]', with_app_command=False)
     async def rating(self, ctx: commands.Context, *members: discord.Member) -> None:
         """Plot duelist's rating."""
+        assert isinstance(ctx.author, discord.Member)
         members = members or (ctx.author,)
         if len(members) > 5:
             raise DuelCogError('Cannot plot more than 5 duelists at once.')

@@ -72,7 +72,7 @@ class ProblemCache:
         self.logger.info(f'{len(problems)} problems fetched from API')
         contest_map: dict[int | None, Any] = {
             problem.contestId: self.cache_master.contest_cache.contest_by_id.get(
-                problem.contestId  # type: ignore[arg-type]
+                problem.contestId
             )
             for problem in problems
         }

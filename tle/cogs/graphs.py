@@ -495,7 +495,7 @@ class Graphs(commands.Cog):
                 [sub.problem.rating for sub in solved_subs]
                 for solved_subs in all_solved_subs
             ]
-            labels = [  # type: ignore[no-redef]
+            labels = [
                 gc.StrWrap(f'{handle}: {len(ratings)}')
                 for handle, ratings in zip(handles, all_ratings, strict=False)
             ]
@@ -600,7 +600,7 @@ class Graphs(commands.Cog):
             # NOTE: matplotlib ignores labels that begin with _
             # https://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.legend
             # Add zero-width space to work around this
-            labels = [  # type: ignore[no-redef]
+            labels = [
                 gc.StrWrap(f'{handle}: {len(times)}')
                 for handle, times in zip(handles, all_times, strict=False)
             ]
@@ -1041,6 +1041,7 @@ class Graphs(commands.Cog):
 
     @plot.command(brief='Plot histogram of gudgiting', with_app_command=False)
     async def howgud(self, ctx: commands.Context, *members: discord.Member) -> None:
+        assert isinstance(ctx.author, discord.Member)
         members = members or (ctx.author,)
         if len(members) > 5:
             raise GraphCogError('Please specify at most 5 gudgitters.')

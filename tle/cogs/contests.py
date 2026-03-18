@@ -478,7 +478,7 @@ class Contests(commands.Cog):
         num_chunks = len(handle_standings_chunks)
         delta_chunks: list[Sequence[Any] | None]
         if deltas:
-            delta_chunks = list(paginator.chunkify(deltas, _STANDINGS_PER_PAGE))  # type: ignore[assignment]
+            delta_chunks = list(paginator.chunkify(deltas, _STANDINGS_PER_PAGE))
         else:
             delta_chunks = [None] * num_chunks
 
@@ -974,6 +974,7 @@ class Contests(commands.Cog):
     )
     async def vcrating(self, ctx: commands.Context, *members: discord.Member) -> None:
         """Plots VC rating for at most 5 users."""
+        assert isinstance(ctx.author, discord.Member)
         members = members or (ctx.author,)
         if len(members) > 5:
             raise ContestCogError('Cannot plot more than 5 VCers at once.')
