@@ -113,7 +113,21 @@ class TLEBot(commands.Bot):
         if cf_cache is not None:
             await cf_cache.conn.close()
         await super().close()
+        
+from flask import Flask
+from threading import Thread
 
+app = Flask(__name__)
+@app.route("/")
+def home():
+    return "TLE bot alive"
+
+def run_web():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
+
+def keep_alive():
+    Thread(target=run_web).start()
 
 def main() -> None:
     load_dotenv()
@@ -167,7 +181,7 @@ def main() -> None:
         asyncio.create_task(discord_common.presence(bot))
 
     bot.add_listener(discord_common.bot_error_handler, name='on_command_error')
-
+    keep_alive()
     bot.run(token)
 
 
